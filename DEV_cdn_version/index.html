@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend's Time</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+    <main>
+        <div id="app" class="text-center">
+            <p>
+                {{ name }} - {{ currentTime }} {{ currentTimeZone }} 
+            </p>
+            <input type="text" placeholder="Friend's name" />
+            <select >
+                <option v-for="option, index in timeZones" v-bind:value="index" @click="changeSelectedIndex(index)">
+                    {{ option.city }}
+                </option>
+            </select>
+            <button>
+                Add
+            </button>
+
+                <ul>
+                    <li v-for="ele, index in list" :key="index" :style="{'background-color': index % 2 == 0 ? 'red': 'green'}">
+                        <div :id="index" >
+                            {{ele.name}}
+                        
+                        </div>
+                        <button @click="deleteItem(index)">Delete </button>
+                    </li>
+                </ul>
+        </div>
+    </main>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                name: 'Rishabh Raj Jaiswal',
+                selectedIndex: 0,
+                selectedName: '',
+                list: [{name: 'Alice'}],
+                
+                timeZones: [
+                    { city: "India/Calcutta", region: "Asia/Calcutta"},
+                    { city: "Honolulu", region: "Pacific/Honolulu" },
+                    { city: "Anchorage", region: "America/Anchorage" },
+                    { city: "Los Angeles", region: "America/Los_Angeles" },
+                    { city: "San Francisco", region: "America/Los_Angeles" },
+                    { city: "Vancouver", region: "America/Vancouver" },
+                    { city: "Phoenix", region: "America/Phoenix" },
+                    { city: "Denver", region: "America/Denver" },
+                    { city: "Costa Rica", region: "America/Costa_Rica" },
+                    { city: "Chicago", region: "America/Chicago" },
+                    { city: "Cancun", region: "America/Cancun" },
+                    { city: "Jamaica", region: "America/Jamaica" },
+                    { city: "Toronto", region: "America/Toronto" },
+                    { city: "Puerto Rico", region: "America/Puerto_Rico" },
+                    { city: "Dublin", region: "Europe/Dublin" },
+                    { city: "London", region: "Europe/London" },
+                    { city: "Rome", region: "Europe/Rome" },
+                    { city: "Vatican", region: "Europe/Vatican" },
+                    { city: "Berlin", region: "Europe/Berlin" },
+                    { city: "Prague", region: "Europe/Prague" },
+                    { city: "Madrid", region: "Europe/Madrid" },
+                    { city: "Paris", region: "Europe/Paris" },
+                    { city: "Warsaw", region: "Europe/Warsaw" },
+                    { city: "Algiers", region: "Africa/Algiers" },
+                    { city: "Athens", region: "Europe/Athens" },
+                    { city: "Cairo", region: "Africa/Cairo" },
+                    { city: "Johannesburg", region: "Africa/Johannesburg" },
+                    { city: "Istanbul", region: "Europe/Istanbul" },
+                    { city: "Jerusalem", region: "Asia/Jerusalem" },
+                    { city: "Baghdad", region: "Asia/Baghdad" },
+                    { city: "Kuwait", region: "Asia/Kuwait" },
+                    { city: "Addis Ababa", region: "Africa/Addis_Ababa" },
+                    { city: "Tehran", region: "Asia/Tehran" },
+                    { city: "Moscow", region: "Europe/Moscow" },
+                    { city: "Katmandu", region: "Asia/Katmandu" },
+                    { city: "Hong Kong", region: "Asia/Hong_Kong" },
+                    { city: "Kuala Lumpur", region: "Asia/Kuala_Lumpur" },
+                    { city: "Singapore", region: "Asia/Singapore" },
+                    { city: "Perth", region: "Australia/Perth" },
+                    { city: "Tokyo", region: "Asia/Tokyo" },
+                    { city: "Melbourne", region: "Australia/Melbourne" }
+                ],
+            }
+        }, 
+
+        computed: {
+            currentTimeZone() {
+                return Intl.DateTimeFormat().resolvedOptions().timeZone
+            },
+            currentTime() {
+                const date = new Date();
+                const now = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                return now;
+            },
+        },
+        methods: {
+            changeSelectedIndex(index) {
+                this.selectedIndex = index;
+                console.log(index);
+            },
+            deleteItem(index) {
+                console.log(index);
+                this.list = this.list.filter((ele, idx) => idx != index);
+            }
+        }
+
+    });
+    
+    // app.component('friend-time', {
+    //     template: 'friend-time COMPONENT'
+    // });
+
+    app.mount('#app');
+</script>
+</body>
+</html>
