@@ -12,47 +12,63 @@
     <main>
         <div id="app" class="text-center">
             <p>
-                {{ name }} - {{ time }} {{ currentTimeZone }} 
+                {{ name }} - {{ time }}, TimeZone: {{ timeZoneRegion }} 
             </p>
             <input type="text" v-model="selectedFriendName" placeholder="Friend's name" />
 
             <select v-model="selectedTimeZoneRegion">
+                <option disabled value="">Please select Timezone</option>
                 <option v-for="option in options" :value="option.region">
                     {{ option.region }}
                 </option>
             </select>
             <button @click="addItem">Add</button>
 
-                <ul>
-                    <li v-for="ele, index in list" :key="index" :style="{'background-color': index % 2 == 0 ? 'red': 'green'}">
-                        <div :id="index" >
-                            {{ ele.name }},
-                            {{ ele.timeZone }},
-                            {{ getTime(ele.timeZone) }}
+            <ul style="list-style: none">
+                <li v-for="ele, index in friendsList" :key="index" :style="{'background-color': index % 2 == 0 ? 'tomato': 'lightgreen'}">
+                    <div :id="index" >
+                        <div>
+                            <friend-time :name="ele.name" :timezone="ele.timeZone" />
                         </div>
-                        <button @click="deleteItem(index)">Delete </button>
-                        
-                    </li>
-                </ul>
+                        {{ getTime(ele.timeZone) }}
+                    </div>
+                    <button @click="deleteItem(index)">Delete </button>
+                    
+                </li>
+            </ul>
         </div>
     </main>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script>
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref } = Vue;
     const app = createApp({
+        setup() {
+            const time = ref('');
+            const timeZoneRegion = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const tick = () => {
+                const settings = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric', second: 'numeric' };
+                const date = new Date().toLocaleDateString('en-GB', settings);
+                time.value = date;
+
+            }
+            setInterval(() => tick(), 1000);
+            return {
+                time,
+                timeZoneRegion
+            }
+        },
         data() {
             return {
                 name: 'Rishabh Raj Jaiswal',
                 selectedTimeZoneRegion: '',
                 selectedFriendName: '',
-                
-                list: [],
+                friendsList: [],
                 options: [
                     { city: "Calcutta", region: "Asia/Calcutta" },
+                    { city: "Los Angeles", region: "America/Los_Angeles" },
+                    { city: "Tokyo", region: "Asia/Tokyo" },
                     { city: "Honolulu", region: "Pacific/Honolulu" },
                     { city: "Anchorage", region: "America/Anchorage" },
-                    { city: "Los Angeles", region: "America/Los_Angeles" },
-                    { city: "San Francisco", region: "America/Los_Angeles" },
                     { city: "Vancouver", region: "America/Vancouver" },
                     { city: "Phoenix", region: "America/Phoenix" },
                     { city: "Denver", region: "America/Denver" },
@@ -87,38 +103,15 @@
                     { city: "Kuala Lumpur", region: "Asia/Kuala_Lumpur" },
                     { city: "Singapore", region: "Asia/Singapore" },
                     { city: "Perth", region: "Australia/Perth" },
-                    { city: "Tokyo", region: "Asia/Tokyo" },
                     { city: "Melbourne", region: "Australia/Melbourne" }                ],
             }
-        }, 
-        setup() {
-            const time = ref({});
-            const tick = () => {
-                const settings = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric', second: 'numeric' };
-                const date = new Date().toLocaleDateString('en-GB', settings);
-                time.value = date;
-
-            }
-            onMounted(() => {
-                setInterval(() => tick(), 1000);
-            });
-            return {
-                time
-            }
-        },
-    
-
-        computed: {
-            currentTimeZone() {
-                return Intl.DateTimeFormat().resolvedOptions().timeZone;
-            },
-        },
+        },     
         methods: {
             deleteItem(index) {
-                this.list = this.list.filter((ele, idx) => idx != index);
+                this.friendsList = this.friendsList.filter((ele, idx) => idx != index);
             },
             addItem() {
-                this.list.push({
+                this.friendsList.push({
                     name: this.selectedFriendName,
                     timeZone: this.selectedTimeZoneRegion
                 });
@@ -131,7 +124,21 @@
         }
 
     });
-    
+
+    app.component('friend-time', {
+        props: {
+            name: {
+                type: String,
+                required: true
+            },
+            timezone: {
+                type: String,
+                require: true
+            }
+        },
+        
+        template: `<div>{{ name.toUpperCase() }}, Time in {{ timezone }}</div>`
+    });
 
     app.mount('#app');
 </script>
