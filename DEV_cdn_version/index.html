@@ -107,7 +107,7 @@
                 });
             },
             getTime(currentTimeZone) {
-                const settings  = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric' };
+                const settings  = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric', second: 'numeric'};
                 const date = new Date().toLocaleDateString('en-GB', {timeZone: currentTimeZone, ...settings});
                 return date;
             }
