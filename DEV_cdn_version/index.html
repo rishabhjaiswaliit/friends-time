@@ -12,7 +12,7 @@
     <main>
         <div id="app" class="text-center">
             <p>
-                {{ name }} - {{ getTime(currentTimeZone) }} {{ currentTimeZone }} 
+                {{ name }} - {{ time }} {{ currentTimeZone }} 
             </p>
             <input type="text" v-model="selectedFriendName" placeholder="Friend's name" />
 
@@ -26,9 +26,9 @@
                 <ul>
                     <li v-for="ele, index in list" :key="index" :style="{'background-color': index % 2 == 0 ? 'red': 'green'}">
                         <div :id="index" >
-                            {{ele.name}},
-                            {{ele.timeZone}},
-                            {{getTime(ele.timeZone)}}
+                            {{ ele.name }},
+                            {{ ele.timeZone }},
+                            {{ getTime(ele.timeZone) }}
                         </div>
                         <button @click="deleteItem(index)">Delete </button>
                         
@@ -38,7 +38,8 @@
     </main>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script>
-    const app = Vue.createApp({
+    const { createApp, ref, onMounted } = Vue;
+    const app = createApp({
         data() {
             return {
                 name: 'Rishabh Raj Jaiswal',
@@ -90,10 +91,26 @@
                     { city: "Melbourne", region: "Australia/Melbourne" }                ],
             }
         }, 
+        setup() {
+            const time = ref({});
+            const tick = () => {
+                const settings = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric', second: 'numeric' };
+                const date = new Date().toLocaleDateString('en-GB', settings);
+                time.value = date;
+
+            }
+            onMounted(() => {
+                setInterval(() => tick(), 1000);
+            });
+            return {
+                time
+            }
+        },
+    
 
         computed: {
             currentTimeZone() {
-                return Intl.DateTimeFormat().resolvedOptions().timeZone
+                return Intl.DateTimeFormat().resolvedOptions().timeZone;
             },
         },
         methods: {
