@@ -12,25 +12,26 @@
     <main>
         <div id="app" class="text-center">
             <p>
-                {{ name }} - {{ currentTime }} {{ currentTimeZone }} 
+                {{ name }} - {{ getTime(currentTimeZone) }} {{ currentTimeZone }} 
             </p>
-            <input type="text" placeholder="Friend's name" />
-            <select >
-                <option v-for="option, index in timeZones" v-bind:value="index" @click="changeSelectedIndex(index)">
-                    {{ option.city }}
+            <input type="text" v-model="selectedFriendName" placeholder="Friend's name" />
+
+            <select v-model="selectedTimeZoneRegion">
+                <option v-for="option in options" :value="option.region">
+                    {{ option.region }}
                 </option>
             </select>
-            <button>
-                Add
-            </button>
+            <button @click="addItem">Add</button>
 
                 <ul>
                     <li v-for="ele, index in list" :key="index" :style="{'background-color': index % 2 == 0 ? 'red': 'green'}">
                         <div :id="index" >
                             {{ele.name}}
-                        
+                            {{ele.timeZone}},
+                            {{getTime(ele.timeZone)}}
                         </div>
                         <button @click="deleteItem(index)">Delete </button>
+                        
                     </li>
                 </ul>
         </div>
@@ -41,12 +42,12 @@
         data() {
             return {
                 name: 'Rishabh Raj Jaiswal',
-                selectedIndex: 0,
-                selectedName: '',
-                list: [{name: 'Alice'}],
+                selectedTimeZoneRegion: '',
+                selectedFriendName: '',
                 
-                timeZones: [
-                    { city: "India/Calcutta", region: "Asia/Calcutta"},
+                list: [],
+                options: [
+                    { city: "Calcutta", region: "Asia/Calcutta" },
                     { city: "Honolulu", region: "Pacific/Honolulu" },
                     { city: "Anchorage", region: "America/Anchorage" },
                     { city: "Los Angeles", region: "America/Los_Angeles" },
@@ -86,8 +87,7 @@
                     { city: "Singapore", region: "Asia/Singapore" },
                     { city: "Perth", region: "Australia/Perth" },
                     { city: "Tokyo", region: "Asia/Tokyo" },
-                    { city: "Melbourne", region: "Australia/Melbourne" }
-                ],
+                    { city: "Melbourne", region: "Australia/Melbourne" }                ],
             }
         }, 
 
@@ -95,28 +95,26 @@
             currentTimeZone() {
                 return Intl.DateTimeFormat().resolvedOptions().timeZone
             },
-            currentTime() {
-                const date = new Date();
-                const now = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-                return now;
-            },
         },
         methods: {
-            changeSelectedIndex(index) {
-                this.selectedIndex = index;
-                console.log(index);
-            },
             deleteItem(index) {
-                console.log(index);
                 this.list = this.list.filter((ele, idx) => idx != index);
+            },
+            addItem() {
+                this.list.push({
+                    name: this.selectedFriendName,
+                    timeZone: this.selectedTimeZoneRegion
+                });
+            },
+            getTime(currentTimeZone) {
+                const settings  = { day: 'numeric', month: 'short', year: 'numeric', hour12: true, minute: 'numeric', hour: 'numeric' };
+                const date = new Date().toLocaleDateString('en-GB', {timeZone: currentTimeZone, ...settings});
+                return date;
             }
         }
 
     });
     
-    // app.component('friend-time', {
-    //     template: 'friend-time COMPONENT'
-    // });
 
     app.mount('#app');
 </script>
